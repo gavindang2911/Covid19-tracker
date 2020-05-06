@@ -113,18 +113,58 @@ function displayPlaces(){
                         <span>${key}</span>
                     </div>
                     <div class = "store-phone-number">
-                        ${da[key]}
+                         ${da[key]}
                 </div>
                 </div>
                 <div class="store-number-container">
-                    <div class="store-number">
-                    ${count++}
-                    </div>
+                    <i class="fas fa-chevron-circle-right" style="font-size: 20px;"></i>
                 </div>
                 </div>
             `
-            console.log("ABC");
             document.querySelector('.stores-list').innerHTML = placesHtml;
     })
 }
+
+function showMarkers(){
+      for(var [index, store] of data["Countires"].entries()){
+          var Country = data["Countires"][index]["Country"];
+          var CountryCode = data["Countires"][index]["CountryCode"];
+          //var openStatusText = store["openStatusText"]
+          var TotalConfirmed = data["Countires"][index]["TotalConfirmed"];
+          createMarker(Country, CountryCode, TotalConfirmed, index+1);
+      }
+  }
+  function createMarker(Country, CountryCode, TotalConfirmed, index){
+    var html = `
+          <div class="store-info-window">
+              <div class="store-info-name">
+                  ${Country}
+              </div>
+              <div class="store-info-city">
+                  ${CountryCode}
+              </div>
+              <div class="store-info-phone">
+                  <div class="circle">
+                      <i class="fas fa-phone-alt"></i>
+                  </div>
+                    ${TotalConfirmed}
+              </div>
+          </div>
+      `;
+      var cityCircle = new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: citymap[city].center,
+        radius: Math.sqrt(citymap[city].population) * 100
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+      markers.push(marker);
+  }
   
