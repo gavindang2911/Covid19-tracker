@@ -91,7 +91,8 @@ function initMap() {
         mapTypeId: 'roadmap',
     });
     infoWindow = new google.maps.InfoWindow();
-    displayPlaces();displayPlaces()
+    //displayPlaces();
+    getCovid();
 }
 
 function displayPlaces(){
@@ -124,6 +125,39 @@ function displayPlaces(){
             document.querySelector('.stores-list').innerHTML = placesHtml;
     })
 }
+
+function getCovid(){
+  fetch('https://api.covid19api.com/summary')
+  .then(function(resp){ return resp.json() })
+  .then(function(data){
+    //console.log(data.Global);
+    var da = data.Global;
+    var placesHtml ='';
+    Object.keys(da).forEach((key,index) => {    
+      placesHtml += `
+              <div class="store-container">
+              <div class="store-info-container">
+                  <div class="store-address">
+                      <span>${key}</span>
+                  </div>
+                  <div class = "store-phone-number">
+                       ${da[key]}
+              </div>
+              </div>
+              <div class="store-number-container">
+                  <i class="fas fa-chevron-circle-right" style="font-size: 20px;"></i>
+              </div>
+              </div>
+          `
+        document.querySelector('.stores-list').innerHTML = placesHtml;
+    }) 
+  })
+  .catch(function(){
+    console.log("error");
+  })
+}
+
+
 
 function showMarkers(){
       for(var [index, store] of data["Countires"].entries()){
