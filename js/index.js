@@ -95,36 +95,36 @@ function initMap() {
     getCovid();
 }
 
-function displayPlaces(){
-    var placesHtml ='';
-    var count = 1;
-    // var NewConfirmed = data['Global']['NewConfirmed'];
-    // var TotalConfirmed = data['Global']['TotalConfirmed'];
-    // var NewDeaths = data['Global']['NewDeaths'];
-    // var TotalDeaths = data['Global']['TotalDeaths'];
-    // var NewRecovered = data['Global']['NewRecovered'];
-    // var TotalRecovered = data['Global']['TotalRecovered'];
-    var da = data["Global"];
-    // for(var i = 0 ; i <=5; i++){
-    Object.keys(da).forEach((key,index) => {    
-        placesHtml += `
-                <div class="store-container">
-                <div class="store-info-container">
-                    <div class="store-address">
-                        <span>${key}</span>
-                    </div>
-                    <div class = "store-phone-number">
-                         ${da[key]}
-                </div>
-                </div>
-                <div class="store-number-container">
-                    <i class="fas fa-chevron-circle-right" style="font-size: 20px;"></i>
-                </div>
-                </div>
-            `
-            document.querySelector('.stores-list').innerHTML = placesHtml;
-    })
-}
+// function displayPlaces(){
+//     var placesHtml ='';
+//     var count = 1;
+//     // var NewConfirmed = data['Global']['NewConfirmed'];
+//     // var TotalConfirmed = data['Global']['TotalConfirmed'];
+//     // var NewDeaths = data['Global']['NewDeaths'];
+//     // var TotalDeaths = data['Global']['TotalDeaths'];
+//     // var NewRecovered = data['Global']['NewRecovered'];
+//     // var TotalRecovered = data['Global']['TotalRecovered'];
+//     var da = data["Global"];
+//     // for(var i = 0 ; i <=5; i++){
+//     Object.keys(da).forEach((key,index) => {    
+//         placesHtml += `
+//                 <div class="store-container">
+//                 <div class="store-info-container">
+//                     <div class="store-address">
+//                         <span>${key}</span>
+//                     </div>
+//                     <div class = "store-phone-number">
+//                          ${da[key]}
+//                 </div>
+//                 </div>
+//                 <div class="store-number-container">
+//                     <i class="fas fa-chevron-circle-right" style="font-size: 20px;"></i>
+//                 </div>
+//                 </div>
+//             `
+//             document.querySelector('.stores-list').innerHTML = placesHtml;
+//     })
+// }
 
 function getCovid(){
   fetch('https://api.covid19api.com/summary')
@@ -156,6 +156,88 @@ function getCovid(){
     console.log("error");
   })
 }
+
+// function searchCountry(){
+//   var foundCountries = [];
+//   var zipcode = document.getElementById('zip-code-input').value;
+//   if(zipcode){
+//     for(var country of countries){
+//       var countryName = country['name'];
+//       if(countryName == zipcode){
+//         foundCountries.push(country);
+//       }
+//     }
+//   }
+//   else{
+//     for(var country of countries){
+//       if(country['name'] === "Canada"){
+//         foundCountries.push(country);
+//       }
+//     }
+    
+//   }
+//   clearLocations();
+//   displayCountry(foundCountries);
+//   // showStoresMarkers(foundCountries);
+//   setOnClickListener();
+// }
+
+// function clearLocations(){
+//   infoWindow.close();
+//   for(var i = 0; i < markers.length;i++){
+//     markers[i].setMap(null);
+//   }
+//   markers.length = 0;
+// }
+
+function displayCountry(country){
+  fetch('https://api.covid19api.com/summary')
+  .then(function(resp){ return resp.json() })
+  .then(function(data){
+    var countryHtml ='';
+    var search = data.Countires;
+    for(var found of search){
+      if(found['Country'] == country['name'])
+      {
+        var name = found['Country'];
+        var NewConfirmed = found['NewConfirmed'];
+        var TotalConfirmed = found['TotalConfirmed']
+        var NewDeaths = found['NewDeaths'];
+        countryHtml += `
+              <div class="store-container">
+                <div class="store-container-background">
+                  <div class="store-info-container">
+                    <div class="store-address">
+                      <span>${name}</span>
+                      <span>${NewConfirmed}, ${TotalConfirmed}</span>
+                    </div>
+                    <div class="store-phone-number">
+                        ${NewDeaths}
+                    </div>
+                  </div>
+                  <div class="store-number-container">
+                    <div class="store-number">
+                      
+                    </div>
+                  </div>
+                </div>  
+              </div>
+        `
+      }
+
+    document.querySelector('.stores-list').innerHTML = countryHtml;
+  }
+  })
+}
+
+// function setOnClickListener(){
+//   var storeEle = document.querySelectorAll('.store-container');
+//   storeEle.forEach(function(elem, index){
+//     elem.addEventListener('click',function(){
+//       new google.maps.event.trigger(markers[index], 'click');
+//     })
+//   })
+// }
 
 
 

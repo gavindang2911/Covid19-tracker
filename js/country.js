@@ -1,4 +1,4 @@
-[
+let countries= [
     {
       "country": "AD",
       "latitude": 42.546245,
