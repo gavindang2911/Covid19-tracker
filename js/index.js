@@ -130,7 +130,7 @@ function getCovid(){
   fetch('https://api.covid19api.com/summary')
   .then(function(resp){ return resp.json() })
   .then(function(data){
-    //console.log(data.Global);
+    console.log(data.Global);
     var da = data.Global;
     var placesHtml ='';
     Object.keys(da).forEach((key,index) => {    
@@ -150,37 +150,50 @@ function getCovid(){
               </div>
           `
         document.querySelector('.stores-list').innerHTML = placesHtml;
-    }) 
+    })
+    // var countryRemote = JSON.parse(data.Countries);
+    var countryRemote = data.Countries;
+    for(var country of countryRemote){
+      for(var countryLocal of countries){
+        if(countryLocal["name"] == country["Country"]){
+          // countryLocal.totalConf = country["TotalConfirmed"];
+          country.latitude = countryLocal["latitude"];
+          country.longitude = countryLocal["longitude"];
+        }
+      }
+    }
+    console.log(countryRemote);
   })
   .catch(function(){
     console.log("error");
   })
 }
 
-// function searchCountry(){
-//   var foundCountries = [];
-//   var zipcode = document.getElementById('zip-code-input').value;
-//   if(zipcode){
-//     for(var country of countries){
-//       var countryName = country['name'];
-//       if(countryName == zipcode){
-//         foundCountries.push(country);
-//       }
-//     }
-//   }
-//   else{
-//     for(var country of countries){
-//       if(country['name'] === "Canada"){
-//         foundCountries.push(country);
-//       }
-//     }
+function searchCountry(){
+  var foundCountries = [];
+  var zipcode = document.getElementById('zip-code-input').value;
+  if(zipcode){
+    for(var country of countries){
+      var countryName = country['name'];
+      if(countryName == zipcode){
+        foundCountries.push(country);
+      }
+    }
+  }
+  else{
+    for(var country of countries){
+      if(country['name'] === "Canada"){
+        foundCountries.push(country);
+        console.log(country);
+      }
+    }
     
-//   }
-//   clearLocations();
-//   displayCountry(foundCountries);
-//   // showStoresMarkers(foundCountries);
-//   setOnClickListener();
-// }
+  }
+  //clearLocations();
+  //displayCountry(foundCountries);
+  // showStoresMarkers(foundCountries);
+  //setOnClickListener();
+}
 
 // function clearLocations(){
 //   infoWindow.close();
@@ -190,45 +203,45 @@ function getCovid(){
 //   markers.length = 0;
 // }
 
-function displayCountry(country){
-  fetch('https://api.covid19api.com/summary')
-  .then(function(resp){ return resp.json() })
-  .then(function(data){
-    var countryHtml ='';
-    var search = data.Countires;
-    for(var found of search){
-      if(found['Country'] == country['name'])
-      {
-        var name = found['Country'];
-        var NewConfirmed = found['NewConfirmed'];
-        var TotalConfirmed = found['TotalConfirmed']
-        var NewDeaths = found['NewDeaths'];
-        countryHtml += `
-              <div class="store-container">
-                <div class="store-container-background">
-                  <div class="store-info-container">
-                    <div class="store-address">
-                      <span>${name}</span>
-                      <span>${NewConfirmed}, ${TotalConfirmed}</span>
-                    </div>
-                    <div class="store-phone-number">
-                        ${NewDeaths}
-                    </div>
-                  </div>
-                  <div class="store-number-container">
-                    <div class="store-number">
+// function displayCountry(country){
+//   fetch('https://api.covid19api.com/summary')
+//   .then(function(resp){ return resp.json() })
+//   .then(function(data){
+//     var countryHtml ='';
+//     var search = data.Countires;
+//     for(var found of search){
+//       if(found['Country'] == country['name'])
+//       {
+//         var name = found['Country'];
+//         var NewConfirmed = found['NewConfirmed'];
+//         var TotalConfirmed = found['TotalConfirmed']
+//         var NewDeaths = found['NewDeaths'];
+//         countryHtml += `
+//               <div class="store-container">
+//                 <div class="store-container-background">
+//                   <div class="store-info-container">
+//                     <div class="store-address">
+//                       <span>${name}</span>
+//                       <span>${NewConfirmed}, ${TotalConfirmed}</span>
+//                     </div>
+//                     <div class="store-phone-number">
+//                         ${NewDeaths}
+//                     </div>
+//                   </div>
+//                   <div class="store-number-container">
+//                     <div class="store-number">
                       
-                    </div>
-                  </div>
-                </div>  
-              </div>
-        `
-      }
+//                     </div>
+//                   </div>
+//                 </div>  
+//               </div>
+//         `
+//       }
 
-    document.querySelector('.stores-list').innerHTML = countryHtml;
-  }
-  })
-}
+//     document.querySelector('.stores-list').innerHTML = countryHtml;
+//   }
+//   })
+// }
 
 // function setOnClickListener(){
 //   var storeEle = document.querySelectorAll('.store-container');
@@ -250,7 +263,7 @@ function showMarkers(){
           createMarker(Country, CountryCode, TotalConfirmed, index+1);
       }
   }
-  function createMarker(Country, CountryCode, TotalConfirmed, index){
+function createMarker(Country, CountryCode, TotalConfirmed, index){
     var html = `
           <div class="store-info-window">
               <div class="store-info-name">
@@ -282,5 +295,40 @@ function showMarkers(){
         infoWindow.open(map, marker);
       });
       markers.push(marker);
-  }
-  
+}
+
+function takeCountry(){
+  fetch('https://api.covid19api.com/summary')
+  .then(function(resp){ return resp.json() })
+  .then(function(data){
+    var center = {};
+    var citymap = {};
+    var center = {};
+    var nameOfCountry = {};
+    var total = {};
+    var countryRemote = data.Countries;
+    // for(var country of countries){
+    //   var total = country["totalConf"];
+    //   center.lat =  country["latitude"];
+    //   center.lng = country["longitude"];
+    //   nameOfCountry = Object.assign({}, center, totalConf);
+    //   citymap = Object.assign({},nameOfCountry);
+    // }
+    for(var country of countryRemote){
+      for(var countryLocal of countries){
+        if(countryLocal["name"] == country["Country"]){
+          total.totalConf = country["TotalConfirmed"];
+          center.lat =  countryLocal["latitude"];
+          center.lng = countryLocal["longitude"];
+          nameOfCountry.Center = center;
+          nameOfCountry.TotalDeaths = total;
+          citymap.country["name"] = nameOfCountry;
+        }
+      }
+    }
+    console.log(citymap);
+  })
+  .catch(function(){
+    console.log("error");
+  })
+}
